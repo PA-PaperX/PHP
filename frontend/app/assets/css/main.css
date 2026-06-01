@@ -1,0 +1,131 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme {
+  --font-sans: 'Outfit', 'Prompt', sans-serif;
+  --font-heading: 'Prompt', sans-serif;
+  --font-kanit: 'Prompt', sans-serif;
+  --font-inter: 'Outfit', sans-serif;
+
+  /* Custom Coral Color (#FF8383 is coral-400 or 500) */
+  --color-coral-50: #fff1f1;
+  --color-coral-100: #ffe0e0;
+  --color-coral-200: #ffc7c7;
+  --color-coral-300: #ffa3a3;
+  --color-coral-400: #ff8383;
+  --color-coral-500: #f85555;
+  --color-coral-600: #e53838;
+  --color-coral-700: #c12424;
+  --color-coral-800: #a02222;
+  --color-coral-900: #842323;
+  --color-coral-950: #480d0d;
+}
+
+:root {
+  --ui-primary: var(--color-coral-500);
+}
+
+.dark {
+  --ui-primary: var(--color-coral-400);
+}
+
+body {
+  font-family: 'Prompt', 'Outfit', sans-serif;
+  @apply bg-white dark:bg-gray-950 text-gray-900 dark:text-white;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Prompt', sans-serif;
+}
+
+/* Custom animation for floating background */
+@keyframes float {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(1deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+.animate-float {
+  animation: float 10s ease-in-out infinite;
+}
+
+/* Topography background animation */
+@keyframes topographyMove {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 0%; }
+}
+
+.animate-topography {
+  animation: topographyMove 40s ease-in-out infinite;
+  background-size: 150%;
+}
+
+/* Mesh Gradient Blob Animation */
+@keyframes blob {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+.animate-blob {
+  animation: blob 10s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* Glassmorphism Utilities */
+.glass {
+  @apply bg-white/70 backdrop-blur-xl border border-white/50 shadow-sm;
+}
+.dark .glass {
+  @apply bg-gray-900/70 border-gray-800/50;
+}
+
+.glass-card {
+  @apply bg-white/80 backdrop-blur-lg border border-white/60 shadow-sm transition-all duration-300;
+}
+.dark .glass-card {
+  @apply bg-gray-900/80 border-gray-800/60;
+}
+
+/* Force pointer cursor on all clickable elements */
+button, 
+a, 
+[role="button"], 
+[type="button"], 
+[type="submit"],
+[type="reset"],
+select,
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
+/* Page Transitions */
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+/* Layout Transitions */
+.layout-enter-active,
+.layout-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.layout-enter-from,
+.layout-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
