@@ -1,6 +1,10 @@
 <template>
-  <div v-motion :initial="{ opacity: 0, y: 20 }" :enter="{ opacity: 1, y: 0, transition: { duration: 500 } }" class="w-full pb-10">
-    <div class="w-full bg-white rounded-3xl p-6 sm:p-10 max-w-md mx-auto z-10 relative">
+  <div class="relative isolate w-full pb-10">
+    <DottedSurface />
+    <div class="pointer-events-none fixed inset-0 z-[1] bg-[radial-gradient(circle_at_center,rgba(248,85,85,0.045),transparent_58%)]"></div>
+
+    <div v-motion :initial="{ opacity: 0, y: 20 }" :enter="{ opacity: 1, y: 0, transition: { duration: 500 } }" class="relative z-10 w-full">
+      <div class="w-full bg-white/95 backdrop-blur-sm rounded-3xl p-6 sm:p-10 max-w-md mx-auto relative shadow-2xl shadow-slate-950/10 ring-1 ring-slate-950/5">
       <div class="text-center mb-8">
         <h2 class="text-2xl font-bold text-gray-900 font-['Kanit'] mb-1">ยินดีต้อนรับกลับ!!</h2>
         <p class="text-xs text-gray-400 font-['Kanit']">กรุณาเข้าสู่บัญชี</p>
@@ -55,7 +59,7 @@
           <button 
             type="submit" 
             class="relative w-full flex items-center justify-center h-[52px] rounded-2xl font-medium text-base shadow-lg shadow-black/10 overflow-hidden group transition-all duration-200"
-            :class="isHovered ? 'border-transparent' : 'border border-black/10 bg-black text-white active:scale-[0.98]'"
+            :class="isHovered ? 'border border-black/10 bg-white text-black' : 'border border-black/10 bg-black text-white active:scale-[0.98]'"
             :disabled="isLoading"
             @mousemove="handleMouseMove"
             @mouseenter="handleMouseEnter"
@@ -65,7 +69,7 @@
             <!-- Default Background for mobile / non-hover -->
             <div v-if="!isHovered" class="absolute inset-0 bg-black pointer-events-none"></div>
 
-            <!-- Desktop Hover Background (White) -->
+            <!-- Desktop Hover Background -->
             <div 
               class="absolute inset-0 bg-white transition-opacity duration-300 pointer-events-none"
               :class="isHovered ? 'opacity-100' : 'opacity-0'"
@@ -87,7 +91,7 @@
             ></div>
 
             <!-- Content -->
-            <div class="relative z-10 flex items-center transition-colors duration-300" :class="isHovered ? 'text-black' : 'text-white'">
+            <div class="relative z-10 flex items-center text-white mix-blend-difference">
               <UIcon v-if="isLoading" name="i-heroicons-arrow-path" class="w-5 h-5 animate-spin mr-2" />
               ล็อคอิน
             </div>
@@ -109,12 +113,14 @@
           </NuxtLink>
         </div>
       </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { reactive } from 'vue'
+import DottedSurface from '~/components/ui/DottedSurface.client.vue'
 import { useAuth } from '~/composables/useAuth'
 
 definePageMeta({

@@ -184,12 +184,20 @@ onMounted(() => {
         <!-- Main Map Area -->
         <UCard class="lg:col-span-2 shadow-md" :ui="{ body: { padding: '!p-0' } }" v-motion-slide-visible-bottom>
           <div class="relative">
-            <!-- Render map from the beginning, use globeAnimation to toggle modes -->
+            <!-- Cobe Globe while locating -->
+            <CobeGlobe
+              v-if="isLoadingLocation"
+              :userLocation="userLocation"
+              :adminLocation="adminLocation"
+              height="500px"
+            />
+
+            <!-- Real Map after location found -->
             <IssueMap 
+              v-else
               :modelValue="userLocation"
               :adminLocation="adminLocation"
               :readonly="true"
-              :globeAnimation="isLoadingLocation"
               height="500px" 
             />
             

@@ -1,5 +1,5 @@
 <template>
-  <div class="h-[calc(100vh-64px)] flex font-kanit bg-white relative overflow-hidden">
+  <div class="h-full w-full flex font-kanit bg-white relative overflow-hidden">
     <!-- Left Sidebar: Ticket List -->
     <div 
       class="w-full md:w-1/3 border-r border-gray-200 flex flex-col absolute md:relative h-full transition-transform duration-300 bg-white z-10"
@@ -63,7 +63,7 @@
               <p class="text-xs text-gray-500">Ticket #{{ selectedTicket.id }}</p>
             </div>
           </div>
-          <div class="flex gap-2">
+          <div class="flex gap-1 sm:gap-2">
             <UButton 
               v-if="selectedTicket.status === 'pending'"
               color="red" 
@@ -71,9 +71,10 @@
               icon="i-heroicons-x-circle"
               @click="rejectTicket"
               :loading="isRejecting"
-              class="mr-2"
+              class="mr-1 sm:mr-2"
             >
-              ปฏิเสธคำขอ
+              <span class="hidden sm:inline">ปฏิเสธคำขอ</span>
+              <span class="sm:hidden">ปฏิเสธ</span>
             </UButton>
             <UButton 
               v-if="selectedTicket.status === 'pending'"
@@ -82,7 +83,8 @@
               @click="grantReset"
               :loading="isGranting"
             >
-              อนุมัติรีเซ็ตรหัสผ่าน
+              <span class="hidden sm:inline">อนุมัติรีเซ็ตรหัสผ่าน</span>
+              <span class="sm:hidden">อนุมัติ</span>
             </UButton>
           </div>
         </div>

@@ -96,6 +96,35 @@ h1, h2, h3, h4, h5, h6 {
   @apply bg-gray-900/80 border-gray-800/60;
 }
 
+/* Dashboard surface system */
+.dashboard-hero {
+  @apply relative overflow-hidden rounded-2xl border border-coral-100/80 bg-white/90 p-5 shadow-sm shadow-coral-900/5 backdrop-blur-xl dark:border-coral-900/25 dark:bg-gray-950/75 sm:p-6;
+}
+
+.dashboard-hero::before {
+  content: "";
+  @apply pointer-events-none absolute inset-0;
+  background:
+    linear-gradient(135deg, rgba(255, 131, 131, 0.16), transparent 38%),
+    radial-gradient(circle at 95% 0%, rgba(255, 224, 224, 0.42), transparent 32%);
+}
+
+.dashboard-hero > * {
+  @apply relative z-10;
+}
+
+.dashboard-surface {
+  @apply rounded-2xl border border-gray-100/80 bg-white/90 shadow-sm shadow-coral-900/5 backdrop-blur-xl transition-all duration-300 dark:border-gray-800/70 dark:bg-gray-950/75;
+}
+
+.dashboard-surface-hover {
+  @apply hover:-translate-y-0.5 hover:border-coral-200 hover:shadow-lg hover:shadow-coral-900/5 dark:hover:border-coral-800/60;
+}
+
+.dashboard-icon-pill {
+  @apply rounded-xl ring-1 ring-white/50 shadow-sm;
+}
+
 /* Force pointer cursor on all clickable elements */
 button, 
 a, 

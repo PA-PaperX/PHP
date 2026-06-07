@@ -90,35 +90,117 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  window.removeEventListener('pointermove', handlePointerMove)
+  window.removeEventListener('pointerup', handlePointerUp)
   if (globeInstance) globeInstance.destroy()
   if (map) map.remove()
 })
 
 let phi = 0
+const pointerInteracting = ref<{ x: number; y: number } | null>(null)
+const lastPointer = ref<{ x: number; y: number; t: number } | null>(null)
+const dragOffset = ref({ phi: 0, theta: 0 })
+const velocity = ref({ phi: 0, theta: 0 })
+const phiOffset = ref(0)
+const thetaOffset = ref(0)
+const isPaused = ref(false)
+
+const handlePointerDown = (e: PointerEvent) => {
+  pointerInteracting.value = { x: e.clientX, y: e.clientY }
+  if (globeCanvas.value) globeCanvas.value.style.cursor = 'grabbing'
+  isPaused.value = true
+}
+
+const handlePointerMove = (e: PointerEvent) => {
+  if (pointerInteracting.value !== null) {
+    const deltaX = e.clientX - pointerInteracting.value.x
+    const deltaY = e.clientY - pointerInteracting.value.y
+    dragOffset.value = { phi: deltaX / 300, theta: deltaY / 1000 }
+    const now = Date.now()
+    if (lastPointer.value) {
+      const dt = Math.max(now - lastPointer.value.t, 1)
+      const maxVelocity = 0.15
+      velocity.value = {
+        phi: Math.max(-maxVelocity, Math.min(maxVelocity, ((e.clientX - lastPointer.value.x) / dt) * 0.3)),
+        theta: Math.max(-maxVelocity, Math.min(maxVelocity, ((e.clientY - lastPointer.value.y) / dt) * 0.08)),
+      }
+    }
+    lastPointer.value = { x: e.clientX, y: e.clientY, t: now }
+  }
+}
+
+const handlePointerUp = () => {
+  if (pointerInteracting.value !== null) {
+    phiOffset.value += dragOffset.value.phi
+    thetaOffset.value += dragOffset.value.theta
+    dragOffset.value = { phi: 0, theta: 0 }
+    lastPointer.value = null
+  }
+  pointerInteracting.value = null
+  if (globeCanvas.value) globeCanvas.value.style.cursor = 'grab'
+  isPaused.value = false
+}
+
 const initGlobe = () => {
   if (!globeCanvas.value) return
-  
+
+  // Build markers from user/admin locations
+  const cobeMarkers: Array<{ location: [number, number]; size: number }> = []
+  if (props.modelValue) {
+    cobeMarkers.push({ location: [props.modelValue.lat, props.modelValue.lng], size: 0.06 })
+  }
+  if (props.adminLocation) {
+    cobeMarkers.push({ location: [props.adminLocation.lat, props.adminLocation.lng], size: 0.04 })
+  }
+
+  const width = globeCanvas.value.offsetWidth || 600
+  const dpr = Math.min(window.devicePixelRatio || 1, 2)
+
   globeInstance = createGlobe(globeCanvas.value, {
-    devicePixelRatio: 2,
-    width: 600,
-    height: 600,
+    devicePixelRatio: dpr,
+    width: width,
+    height: width,
     phi: 0,
-    theta: 0.1,
-    dark: 0, // 0 for light theme
-    diffuse: 1.2,
+    theta: 0.15,
+    dark: 0,
+    diffuse: 1.5,
     mapSamples: 16000,
-    mapBrightness: 6,
-    baseColor: [1, 1, 1], // white
-    markerColor: [0.98, 0.45, 0.45], // primary/coral color
+    mapBrightness: 8,
+    baseColor: [1, 1, 1],
+    markerColor: [0.97, 0.51, 0.51], // Coral #FF8383
     glowColor: [0.95, 0.95, 0.95],
-    markers: [],
+    markers: cobeMarkers,
     onRender: (state) => {
-      // Called on every animation frame.
-      // `state` will be an empty object, return updated params.
-      state.phi = phi
-      phi += 0.01
+      if (!isPaused.value) {
+        phi += 0.005
+        // Apply velocity decay
+        if (Math.abs(velocity.value.phi) > 0.0001 || Math.abs(velocity.value.theta) > 0.0001) {
+          phiOffset.value += velocity.value.phi
+          thetaOffset.value += velocity.value.theta
+          velocity.value.phi *= 0.95
+          velocity.value.theta *= 0.95
+        }
+        // Clamp theta offset
+        const thetaMin = -0.4, thetaMax = 0.4
+        if (thetaOffset.value < thetaMin) {
+          thetaOffset.value += (thetaMin - thetaOffset.value) * 0.1
+        } else if (thetaOffset.value > thetaMax) {
+          thetaOffset.value += (thetaMax - thetaOffset.value) * 0.1
+        }
+      }
+      state.phi = phi + phiOffset.value + dragOffset.value.phi
+      state.theta = 0.15 + thetaOffset.value + dragOffset.value.theta
     },
   })
+
+  // Register global pointer events for dragging
+  window.addEventListener('pointermove', handlePointerMove, { passive: true })
+  window.addEventListener('pointerup', handlePointerUp, { passive: true })
+
+  // Fade in the globe canvas
+  setTimeout(() => {
+    if (globeCanvas.value) globeCanvas.value.style.opacity = '1'
+  }, 100)
 }
 
 // Watch for external updates
@@ -308,16 +390,28 @@ function addAdminMarker(lng: number, lat: number) {
     
     <!-- Cobe Globe Overlay -->
     <transition name="fade">
-      <div v-show="globeAnimation" class="absolute inset-0 z-20 bg-white/90 dark:bg-black/90 backdrop-blur-sm flex flex-col items-center justify-center overflow-hidden">
+      <div v-show="globeAnimation" class="absolute inset-0 z-20 bg-white/95 dark:bg-gray-950/95 backdrop-blur-sm flex flex-col items-center justify-center overflow-hidden">
         <!-- Globe Container -->
-        <div class="relative w-[600px] h-[600px] -mt-20 flex items-center justify-center opacity-80 pointer-events-none">
-          <canvas ref="globeCanvas" style="width: 600px; height: 600px;"></canvas>
+        <div class="relative w-full max-w-[500px] aspect-square -mt-10 flex items-center justify-center select-none">
+          <canvas 
+            ref="globeCanvas" 
+            @pointerdown="handlePointerDown" 
+            style="width: 100%; height: 100%; cursor: grab; opacity: 0; transition: opacity 1.2s ease; border-radius: 50%; touch-action: none;"
+          ></canvas>
         </div>
         
         <!-- Text overlay -->
-        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-20 text-center pointer-events-none w-full z-30">
-          <h3 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-wider drop-shadow-md font-kanit">กำลังค้นหาพิกัดและเส้นทาง...</h3>
-          <p class="text-gray-600 dark:text-gray-300 mt-3 text-lg font-medium font-kanit drop-shadow">โปรดรอสักครู่ ระบบกำลังประเมินระยะทาง</p>
+        <div class="text-center -mt-10 pointer-events-none w-full z-30 px-6">
+          <h3 class="text-xl sm:text-2xl font-black text-gray-900 dark:text-white tracking-wide font-kanit">
+            <span class="inline-flex items-center gap-2">
+              <span class="relative flex h-3 w-3">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-coral-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-coral-500"></span>
+              </span>
+              กำลังค้นหาพิกัดและเส้นทาง...
+            </span>
+          </h3>
+          <p class="text-gray-500 dark:text-gray-400 mt-2 text-sm font-kanit">ลากเพื่อหมุนโลก · ระบบกำลังประเมินระยะทาง</p>
         </div>
       </div>
     </transition>

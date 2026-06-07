@@ -70,7 +70,7 @@ onUnmounted(() => {
   <div class="space-y-6 pb-10" v-motion-fade>
     <!-- Hidden element to force Tailwind to generate red badge classes -->
     <UBadge color="red" variant="subtle" class="hidden" />
-    <div class="flex items-center justify-between" v-motion-fade>
+    <div class="dashboard-hero flex items-center justify-between" v-motion-fade>
       <div>
         <h1 class="text-2xl font-bold font-kanit text-gray-900 dark:text-white">หน้าหลัก (Home)</h1>
         <p class="text-gray-500 dark:text-gray-400 mt-1 font-kanit">ยินดีต้อนรับเข้าสู่ระบบแจ้งซ่อมและเบิกอุปกรณ์</p>
@@ -80,9 +80,9 @@ onUnmounted(() => {
     <!-- User View: Quick Actions -->
     <div v-if="user?.role !== 'admin'" class="grid grid-cols-1 sm:grid-cols-2 gap-6" v-motion-slide-visible-bottom>
       <NuxtLink to="/report-issue" class="block h-full">
-        <UCard class="h-full glass-card hover:border-coral-400 hover:-translate-y-1 hover:shadow-md cursor-pointer group">
+        <UCard class="h-full dashboard-surface dashboard-surface-hover cursor-pointer group">
           <div class="flex flex-col items-center text-center gap-4 p-6">
-            <div class="bg-coral-500/90 p-4 rounded-full text-white shadow-md shadow-coral-500/30 group-hover:scale-110 transition-transform">
+            <div class="dashboard-icon-pill bg-coral-500/90 p-4 text-white shadow-md shadow-coral-500/30 group-hover:scale-110 transition-transform">
               <UIcon name="i-heroicons-exclamation-triangle" class="w-10 h-10" />
             </div>
             <div>
@@ -94,9 +94,9 @@ onUnmounted(() => {
       </NuxtLink>
 
       <NuxtLink to="/inventory" class="block h-full">
-        <UCard class="h-full glass-card hover:border-blue-400 hover:-translate-y-1 hover:shadow-md cursor-pointer group">
+        <UCard class="h-full dashboard-surface dashboard-surface-hover cursor-pointer group">
           <div class="flex flex-col items-center text-center gap-4 p-6">
-            <div class="bg-blue-500/90 p-4 rounded-full text-white shadow-md shadow-blue-500/30 group-hover:scale-110 transition-transform">
+            <div class="dashboard-icon-pill bg-slate-900 p-4 text-white shadow-md shadow-slate-900/20 group-hover:scale-110 transition-transform dark:bg-slate-100 dark:text-slate-950">
               <UIcon name="i-heroicons-cube" class="w-10 h-10" />
             </div>
             <div>
@@ -112,7 +112,7 @@ onUnmounted(() => {
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-bold font-kanit text-gray-900 dark:text-white">ประวัติการแจ้งปัญหาล่าสุดของคุณ</h2>
       </div>
-      <UCard class="glass" :ui="{ body: { padding: '!p-0' } }">
+      <UCard class="dashboard-surface overflow-hidden" :ui="{ body: { padding: '!p-0' } }">
         <UTable :data="recentIssues?.issues || []" :columns="columns" class="font-kanit" :loading="pending">
           <template #status-cell="{ row }">
             <UBadge :color="row.original.status === 'resolved' ? 'success' : (row.original.status === 'closed' || row.original.status === 'cancelled') ? 'red' : row.original.status === 'in_progress' ? 'primary' : 'warning'" variant="subtle">

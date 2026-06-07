@@ -20,3 +20,9 @@ docker/mysql/data/
 Thumbs.db
 .vscode/
 .idea/
+
+# Agent & Cache
+.agent/
+.codex/
+.npm-cache/
+frontend/.npm-cache-local/
