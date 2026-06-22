@@ -22,7 +22,7 @@ services:
   mysql:
     image: mysql:8.0
     ports:
-      - "3306:3306"
+      - "3307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: iya_root_2024
       MYSQL_DATABASE: iya_db
