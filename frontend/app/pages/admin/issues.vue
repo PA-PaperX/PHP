@@ -44,6 +44,7 @@ const columns = computed(() => {
   if (isMd.value) cols.push({ accessorKey: 'category', header: 'หมวดหมู่' })
   
   cols.push({ accessorKey: 'status', header: 'สถานะ' })
+  cols.push({ accessorKey: 'payment_status', header: 'ชำระเงิน' })
   
   if (isLg.value) cols.push({ accessorKey: 'createdAt', header: 'วันที่แจ้ง' })
   
@@ -58,6 +59,7 @@ const isSlideoverOpen = ref(false)
 const editStatus = ref('')
 const adminNote = ref('')
 const adminImage = ref<File | null>(null)
+const paymentStatus = ref('unpaid')
 const isUpdating = ref(false)
 const adminLocation = ref<{lat: number, lng: number} | null>(null)
 const distanceText = ref<string>('')
@@ -79,6 +81,7 @@ const openIssue = (issue: any) => {
   editStatus.value = issue.status
   adminNote.value = issue.admin_note || ''
   adminImage.value = null
+  paymentStatus.value = issue.payment_status || 'unpaid'
   isSlideoverOpen.value = true
   
   adminLocation.value = null
@@ -115,6 +118,7 @@ const updateIssue = async (closeOnSuccess = true) => {
     formData.append('id', selectedIssue.value.id.toString())
     formData.append('status', editStatus.value)
     formData.append('admin_note', adminNote.value || '')
+    formData.append('payment_status', paymentStatus.value)
     if (adminImage.value) {
       formData.append('admin_image', adminImage.value)
     }
@@ -142,15 +146,27 @@ const updateIssue = async (closeOnSuccess = true) => {
     }
   } catch (e) {
     console.error(e)
+    toast.add({ title: 'ไม่สามารถอัปเดตได้ กรุณาตรวจสอบการชำระเงินก่อนเริ่มงาน', color: 'error' })
   } finally {
     isUpdating.value = false
   }
 }
 
 const handleAction = async (newStatus: string) => {
+  if (newStatus === 'in_progress' && paymentStatus.value !== 'paid') {
+    toast.add({ title: 'กรุณายืนยันการชำระเงินก่อนรับเรื่อง', color: 'warning' })
+    return
+  }
   editStatus.value = newStatus
   await updateIssue(false)
 }
+
+const paymentConfirmed = computed({
+  get: () => paymentStatus.value === 'paid',
+  set: (value: boolean) => {
+    paymentStatus.value = value ? 'paid' : 'unpaid'
+  }
+})
 
 const statusOptions = [
   { name: 'กำลังดำเนินการ', value: 'in_progress' },
@@ -163,6 +179,8 @@ const isCancelModalOpen = ref(false)
 const handleSaveClick = () => {
   if (editStatus.value === 'closed') {
     isCancelModalOpen.value = true
+  } else if (editStatus.value === 'in_progress' && paymentStatus.value !== 'paid') {
+    toast.add({ title: 'กรุณายืนยันการชำระเงินก่อนเริ่มงาน', color: 'warning' })
   } else {
     updateIssue(true)
   }
@@ -228,6 +246,12 @@ onUnmounted(() => {
             {{ row.original.status === 'resolved' ? 'เสร็จสิ้น' : (row.original.status === 'closed' || row.original.status === 'cancelled') ? 'ยกเลิก' : row.original.status === 'in_progress' ? 'กำลังดำเนินการ' : 'รอดำเนินการ' }}
           </UBadge>
         </template>
+
+        <template #payment_status-cell="{ row }">
+          <UBadge :color="row.original.payment_status === 'paid' ? 'success' : 'warning'" variant="subtle">
+            {{ row.original.payment_status === 'paid' ? 'ชำระแล้ว' : 'รอชำระ' }}
+          </UBadge>
+        </template>
         
         <template #actions-cell="{ row }">
           <UButton size="xs" color="gray" variant="ghost" icon="i-heroicons-eye" @click="openIssue(row.original)">
@@ -269,6 +293,12 @@ onUnmounted(() => {
                 <div>
                   <p class="text-sm text-gray-500">สถานที่</p>
                   <p class="font-medium">{{ selectedIssue.location || '-' }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">ชำระเงิน</p>
+                  <UBadge :color="paymentStatus === 'paid' ? 'success' : 'warning'" variant="subtle" class="mt-1">
+                    {{ paymentStatus === 'paid' ? 'ชำระแล้ว' : 'รอชำระ' }}
+                  </UBadge>
                 </div>
               </div>
 
@@ -313,6 +343,10 @@ onUnmounted(() => {
                 <UIcon name="i-heroicons-inbox-arrow-down" class="w-12 h-12 text-gray-400 mb-2" />
                 <h4 class="font-medium text-gray-900 dark:text-white text-lg">มีรายการแจ้งซ่อมใหม่</h4>
                 <p class="text-sm text-gray-500 mt-1 mb-4">คุณต้องการรับเรื่องนี้เพื่อดำเนินการซ่อมแซมต่อไปหรือไม่?</p>
+                <label class="flex items-center justify-center gap-2 p-3 rounded-lg bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-sm font-medium text-gray-700 dark:text-gray-200">
+                  <input v-model="paymentConfirmed" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
+                  ยืนยันว่าชำระเงินแล้ว
+                </label>
                 <div class="mt-4">
                   <label class="block text-sm font-medium text-gray-700 mb-1 text-left">หมายเหตุ (ถ้ามี)</label>
                   <UTextarea v-model="adminNote" placeholder="ระบุเหตุผลหากปฏิเสธ หรือหมายเหตุรับเรื่อง..." :rows="2" />
@@ -366,7 +400,7 @@ onUnmounted(() => {
           
           <div v-if="selectedIssue?.status === 'pending'" class="p-4 border-t border-gray-100 dark:border-gray-800 flex gap-3 bg-white dark:bg-gray-950">
             <UButton color="red" variant="soft" class="flex-1 justify-center" @click="openRejectModal">ปฏิเสธการซ่อม</UButton>
-            <UButton color="primary" class="flex-1 justify-center" :loading="isUpdating" @click="handleAction('in_progress')">รับเรื่องดำเนินการ</UButton>
+            <UButton color="primary" class="flex-1 justify-center" :loading="isUpdating" :disabled="paymentStatus !== 'paid'" @click="handleAction('in_progress')">รับเรื่องดำเนินการ</UButton>
           </div>
           <div v-else-if="selectedIssue?.status === 'in_progress'" class="p-4 border-t border-gray-100 dark:border-gray-800 flex gap-3 bg-white dark:bg-gray-950">
             <UButton color="gray" variant="ghost" class="flex-1 justify-center" @click="isSlideoverOpen = false">ปิดหน้าต่าง</UButton>

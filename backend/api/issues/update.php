@@ -6,6 +6,7 @@ requireAdmin();
 $id = $_POST['id'] ?? null;
 $status = $_POST['status'] ?? null;
 $adminNote = $_POST['admin_note'] ?? null;
+$paymentStatus = $_POST['payment_status'] ?? null;
 
 if (!$id || !$status) {
     http_response_code(400);
@@ -17,6 +18,13 @@ $validStatuses = ['pending', 'in_progress', 'resolved', 'closed'];
 if (!in_array($status, $validStatuses)) {
     http_response_code(400);
     echo json_encode(['error' => 'Invalid status']);
+    exit;
+}
+
+$validPaymentStatuses = ['unpaid', 'paid'];
+if ($paymentStatus !== null && !in_array($paymentStatus, $validPaymentStatuses)) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Invalid payment status']);
     exit;
 }
 
@@ -48,13 +56,39 @@ if (!$issue) {
 }
 
 $oldStatus = $issue['status'];
+$oldPaymentStatus = $issue['payment_status'] ?? 'unpaid';
+$newPaymentStatus = $paymentStatus ?? $oldPaymentStatus;
+
+if ($status === 'in_progress' && $newPaymentStatus !== 'paid') {
+    http_response_code(400);
+    echo json_encode(['error' => 'Payment is required before starting work']);
+    exit;
+}
 
 if ($adminImagePath) {
-    $stmt = $db->prepare('UPDATE issues SET status = ?, admin_note = ?, admin_image_path = ?, admin_id = ? WHERE id = ?');
-    $stmt->execute([$status, $adminNote, $adminImagePath, $user['id'], $id]);
+    $stmt = $db->prepare("
+        UPDATE issues
+        SET status = ?, admin_note = ?, admin_image_path = ?, admin_id = ?, payment_status = ?,
+            paid_at = CASE
+                WHEN ? = 'paid' AND (paid_at IS NULL OR payment_status <> 'paid') THEN NOW()
+                WHEN ? = 'unpaid' THEN NULL
+                ELSE paid_at
+            END
+        WHERE id = ?
+    ");
+    $stmt->execute([$status, $adminNote, $adminImagePath, $user['id'], $newPaymentStatus, $newPaymentStatus, $newPaymentStatus, $id]);
 } else {
-    $stmt = $db->prepare('UPDATE issues SET status = ?, admin_note = ?, admin_id = ? WHERE id = ?');
-    $stmt->execute([$status, $adminNote, $user['id'], $id]);
+    $stmt = $db->prepare("
+        UPDATE issues
+        SET status = ?, admin_note = ?, admin_id = ?, payment_status = ?,
+            paid_at = CASE
+                WHEN ? = 'paid' AND (paid_at IS NULL OR payment_status <> 'paid') THEN NOW()
+                WHEN ? = 'unpaid' THEN NULL
+                ELSE paid_at
+            END
+        WHERE id = ?
+    ");
+    $stmt->execute([$status, $adminNote, $user['id'], $newPaymentStatus, $newPaymentStatus, $newPaymentStatus, $id]);
 }
 
 if ($oldStatus !== $status) {

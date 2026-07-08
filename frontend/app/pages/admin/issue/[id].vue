@@ -30,6 +30,7 @@ const isUpdating = ref(false)
 const editStatus = ref('')
 const adminNote = ref('')
 const adminImage = ref<File | null>(null)
+const paymentStatus = ref('unpaid')
 const isCancelModalOpen = ref(false)
 
 const statusOptions = [
@@ -44,6 +45,7 @@ watch(issue, (newVal) => {
   if (newVal && !editStatus.value) {
     editStatus.value = newVal.status === 'pending' ? 'in_progress' : newVal.status
     adminNote.value = newVal.admin_note || ''
+    paymentStatus.value = newVal.payment_status || 'unpaid'
   }
 }, { immediate: true })
 
@@ -62,6 +64,7 @@ const updateIssue = async (goBack = false) => {
     formData.append('id', issue.value.id.toString())
     formData.append('status', editStatus.value)
     formData.append('admin_note', adminNote.value || '')
+    formData.append('payment_status', paymentStatus.value)
     if (adminImage.value) {
       formData.append('admin_image', adminImage.value)
     }
@@ -87,13 +90,26 @@ const updateIssue = async (goBack = false) => {
 }
 
 const handleAction = async (newStatus: string) => {
+  if (newStatus === 'in_progress' && paymentStatus.value !== 'paid') {
+    toast.add({ title: 'กรุณายืนยันการชำระเงินก่อนรับเรื่อง', color: 'warning' })
+    return
+  }
   editStatus.value = newStatus
   await updateIssue(false)
 }
 
+const paymentConfirmed = computed({
+  get: () => paymentStatus.value === 'paid',
+  set: (value: boolean) => {
+    paymentStatus.value = value ? 'paid' : 'unpaid'
+  }
+})
+
 const handleSaveClick = () => {
   if (editStatus.value === 'closed') {
     isCancelModalOpen.value = true
+  } else if (editStatus.value === 'in_progress' && paymentStatus.value !== 'paid') {
+    toast.add({ title: 'กรุณายืนยันการชำระเงินก่อนเริ่มงาน', color: 'warning' })
   } else {
     updateIssue(true)
   }
@@ -241,6 +257,12 @@ onMounted(() => {
                   <p class="text-sm text-gray-500">เวลาที่แจ้ง</p>
                   <p class="text-sm mt-1">{{ new Date(issue.created_at).toLocaleTimeString('th-TH') }}</p>
                 </div>
+                <div>
+                  <p class="text-sm text-gray-500">ชำระเงิน</p>
+                  <UBadge :color="paymentStatus === 'paid' ? 'success' : 'warning'" variant="subtle" class="mt-1">
+                    {{ paymentStatus === 'paid' ? 'ชำระแล้ว' : 'รอชำระ' }}
+                  </UBadge>
+                </div>
               </div>
               
               <USeparator />
@@ -295,9 +317,13 @@ onMounted(() => {
             <div v-if="issue.status === 'pending'" class="text-center p-4 border border-dashed border-gray-300 dark:border-gray-700 rounded-xl bg-gray-50/50 dark:bg-gray-900/30">
               <h4 class="font-medium text-gray-900 dark:text-white mb-2">รับเรื่องดำเนินการ</h4>
               <p class="text-sm text-gray-500 mb-4">คุณต้องการรับเรื่องนี้เพื่อดำเนินการต่อหรือไม่?</p>
+              <label class="flex items-center justify-center gap-2 p-3 mb-4 rounded-lg bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-sm font-medium text-gray-700 dark:text-gray-200">
+                <input v-model="paymentConfirmed" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
+                ยืนยันว่าชำระเงินแล้ว
+              </label>
               <div class="flex gap-2">
                 <UButton color="red" variant="soft" class="flex-1 justify-center" @click="openRejectModal">ปฏิเสธ</UButton>
-                <UButton color="primary" class="flex-1 justify-center" :loading="isUpdating" @click="handleAction('in_progress')">รับเรื่อง</UButton>
+                <UButton color="primary" class="flex-1 justify-center" :loading="isUpdating" :disabled="paymentStatus !== 'paid'" @click="handleAction('in_progress')">รับเรื่อง</UButton>
               </div>
             </div>
 
