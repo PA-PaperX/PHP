@@ -1,0 +1,189 @@
+{
+    "equipment": [
+        {
+            "id": 10,
+            "name": "α╣Çα╕íα╕▓α╕¬α╣î",
+            "category": "α╕«α╕▓α╕úα╣îα╕öα╣üα╕ºα╕úα╣î (Hardware)",
+            "description": "",
+            "image_path": "\/uploads\/equip_6a15d393d420e.jpg",
+            "quantity": 5,
+            "available": 2,
+            "created_at": "2026-05-26 17:08:35",
+            "updated_at": "2026-05-28 19:43:37"
+        },
+        {
+            "id": 12,
+            "name": "α╕äα╕╡α╕óα╣îα╕Üα╕¡α╕úα╣îα╕ö",
+            "category": "α╕«α╕▓α╕úα╣îα╕öα╣üα╕ºα╕úα╣î (Hardware)",
+            "description": "α╕₧α╕¡α╣âα╕èα╣ë",
+            "image_path": "\/uploads\/equip_6a16939175ff3.png",
+            "quantity": 1,
+            "available": 0,
+            "created_at": "2026-05-27 06:47:45",
+            "updated_at": "2026-05-29 09:34:00"
+        },
+        {
+            "id": 14,
+            "name": "Test Laptop",
+            "category": "α╕«α╕▓α╕úα╣îα╕öα╣üα╕ºα╕úα╣î (Hardware)",
+            "description": "A testing laptop",
+            "image_path": null,
+            "quantity": 8,
+            "available": 4,
+            "created_at": "2026-05-27 20:14:07",
+            "updated_at": "2026-05-28 19:43:37"
+        },
+        {
+            "id": 15,
+            "name": "Test Laptop",
+            "category": "α╕¡α╕╖α╣êα╕Öα╣å (Other)",
+            "description": "A testing laptop",
+            "image_path": null,
+            "quantity": 7,
+            "available": 7,
+            "created_at": "2026-05-27 20:23:09",
+            "updated_at": "2026-05-29 10:21:25"
+        },
+        {
+            "id": 16,
+            "name": "67",
+            "category": "α╕¡α╕╖α╣êα╕Öα╣å (Other)",
+            "description": "6767",
+            "image_path": "\/uploads\/equip_6a182b8b7950f.jpg",
+            "quantity": 1,
+            "available": 0,
+            "created_at": "2026-05-28 11:48:27",
+            "updated_at": "2026-05-29 09:32:07"
+        },
+        {
+            "id": 17,
+            "name": "12",
+            "category": "α╣Çα╕äα╕úα╕╖α╕¡α╕éα╣êα╕▓α╕ó (Network)",
+            "description": "",
+            "image_path": null,
+            "quantity": 10,
+            "available": 10,
+            "created_at": "2026-05-28 11:52:24",
+            "updated_at": "2026-05-28 11:52:24"
+        }
+    ],
+    "users": [
+        {
+            "id": 2,
+            "email": "paperx@gmail.com",
+            "password": "$2y$10$eqAEziGErbKpibpDCHmXUe3b8g9.vjqK.wwgMXfM3cZ.5qXo2522G",
+            "role": "admin",
+            "created_at": "2026-05-26 15:28:59",
+            "username": "paperx",
+            "profile_image": "\/uploads\/profiles\/user_2_1779895948.jpg"
+        },
+        {
+            "id": 18,
+            "email": "test@gmail.com",
+            "password": "$2y$10$TOggOOo4y\/ukHxHF7qqRaeRcaTRvIgb8bx8pbQ40m2Q6Me9gqnj5e",
+            "role": "user",
+            "created_at": "2026-05-28 10:10:04",
+            "username": "test",
+            "profile_image": null
+        },
+        {
+            "id": 19,
+            "email": "testuser@email.com",
+            "password": "$2y$10$fmUB\/Bn3AXyQ3ISK2.7gb.Ek05.aahOpRaABBEWZiOMNIBW1XKJv2",
+            "role": "user",
+            "created_at": "2026-05-28 11:04:53",
+            "username": "testuser",
+            "profile_image": null
+        },
+        {
+            "id": 20,
+            "email": "school.ocm@gmail.com",
+            "password": "$2y$10$nEX61om35X7uesCBaENzC.0y3jfojU2BMjF8RmUpihX2k3ZB6g\/Ou",
+            "role": "admin",
+            "created_at": "2026-05-28 11:14:39",
+            "username": "arm",
+            "profile_image": "\/uploads\/profiles\/profile_6a1964d63ea9e.png"
+        },
+        {
+            "id": 21,
+            "email": "aaaaaa@gmail.com",
+            "password": "$2y$10$2kvl6XNtyTzGrSMfsg9OGegCu0BpZf4Fy9LSGooK7VxwlyzQ3LbHK",
+            "role": "user",
+            "created_at": "2026-05-28 11:26:26",
+            "username": "Kuy",
+            "profile_image": null
+        },
+        {
+            "id": 22,
+            "email": "puyyaporn2549@gmail.com",
+            "password": "$2y$10$cEsGEx7FjjNJ.ZBscmVymO493rvOoHSsAf0ajCfwbjxGlQclLQcPK",
+            "role": "user",
+            "created_at": "2026-05-29 09:27:37",
+            "username": "mimi",
+            "profile_image": null
+        },
+        {
+            "id": 23,
+            "email": "dsasad@gmail.com",
+            "password": "$2y$10$Zyuzspr0d8ynUWtX4Uk37Oh7gmfgDATzwwFWJZnqtafLgG.2Tv6Re",
+            "role": "user",
+            "created_at": "2026-05-29 09:31:06",
+            "username": "sadsad",
+            "profile_image": null
+        },
+        {
+            "id": 24,
+            "email": "asd123456@gmail.com",
+            "password": "$2y$10$RRI.nr5nnFHX9GtIPNp.mOd4sNLcQS6eDy2snAO4npUuX6n\/6gr\/u",
+            "role": "admin",
+            "created_at": "2026-05-29 09:31:26",
+            "username": "asd000a1",
+            "profile_image": null
+        },
+        {
+            "id": 25,
+            "email": "sixseven@gmail.com",
+            "password": "$2y$10$1SztdFri5WK15vQE3qJJueQEZpnI\/vzoT.47HwNF0z07Hf.EEBIoW",
+            "role": "user",
+            "created_at": "2026-05-29 09:36:53",
+            "username": "sixseven",
+            "profile_image": null
+        },
+        {
+            "id": 26,
+            "email": "armarm555@gmail.67com",
+            "password": "$2y$10$aJaX8n3WDmH\/1SqiRDF4aO7Rl8s8m1\/YCJmnk8hfZsyHRRiJk.b0S",
+            "role": "user",
+            "created_at": "2026-05-29 09:41:34",
+            "username": "Eonaria ",
+            "profile_image": null
+        },
+        {
+            "id": 27,
+            "email": "Satayu2026@gmail.com",
+            "password": "$2y$10$sCzsoQmktCmHkXojgrCXX.7tRoTGWoXCclkPp\/RuEFKjWyhiT5Nkm",
+            "role": "admin",
+            "created_at": "2026-05-29 10:02:25",
+            "username": "Satayu",
+            "profile_image": null
+        },
+        {
+            "id": 28,
+            "email": "rave12345@gmail.com",
+            "password": "$2y$10$SKcrudAajPbaYdL6.3Mp6eitpovKX\/W3IrNvurJ1XF2OgezAYQIKy",
+            "role": "user",
+            "created_at": "2026-05-29 11:07:40",
+            "username": "ravee",
+            "profile_image": "\/uploads\/profiles\/profile_6a1974438661a.gif"
+        },
+        {
+            "id": 29,
+            "email": "denay@gmail.com",
+            "password": "$2y$10$VmIpzxApknsFRjXaYkFB7eUkc9lk3J4NdrDLg3hZcNA9E\/7kCin9W",
+            "role": "user",
+            "created_at": "2026-06-01 15:03:17",
+            "username": "denay",
+            "profile_image": null
+        }
+    ]
+}

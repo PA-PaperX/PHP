@@ -1,0 +1,7 @@
+id	name	category	description	image_path	quantity	available	created_at	updated_at
+10	α╣Çα╕íα╕▓α╕¬α╣î	α╕«α╕▓α╕úα╣îα╕öα╣üα╕ºα╕úα╣î (Hardware)		/uploads/equip_6a15d393d420e.jpg	5	2	2026-05-26 17:08:35	2026-05-28 19:43:37
+12	α╕äα╕╡α╕óα╣îα╕Üα╕¡α╕úα╣îα╕ö	α╕«α╕▓α╕úα╣îα╕öα╣üα╕ºα╕úα╣î (Hardware)	α╕₧α╕¡α╣âα╕èα╣ë	/uploads/equip_6a16939175ff3.png	1	0	2026-05-27 06:47:45	2026-05-29 09:34:00
+14	Test Laptop	α╕«α╕▓α╕úα╣îα╕öα╣üα╕ºα╕úα╣î (Hardware)	A testing laptop	NULL	8	4	2026-05-27 20:14:07	2026-05-28 19:43:37
+15	Test Laptop	α╕¡α╕╖α╣êα╕Öα╣å (Other)	A testing laptop	NULL	7	7	2026-05-27 20:23:09	2026-05-29 10:21:25
+16	67	α╕¡α╕╖α╣êα╕Öα╣å (Other)	6767	/uploads/equip_6a182b8b7950f.jpg	1	0	2026-05-28 11:48:27	2026-05-29 09:32:07
+17	12	α╣Çα╕äα╕úα╕╖α╕¡α╕éα╣êα╕▓α╕ó (Network)		NULL	10	10	2026-05-28 11:52:24	2026-05-28 11:52:24

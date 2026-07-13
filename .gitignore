@@ -1,0 +1,11 @@
+node_modules/
+.nuxt/
+.output/
+dist/
+vendor/
+.env
+.DS_Store
+uploads/
+Thumbs.db
+*.sqlite
+*.log
