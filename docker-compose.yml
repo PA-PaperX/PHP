@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./docker/php
+    ports:
+      - "8080:80"
+    volumes:
+      - ./backend:/var/www/html
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_HOST: mysql
+      DB_NAME: iya_db
+      DB_USER: iya_user
+      DB_PASS: iya_pass_2024
+    networks:
+      - iya_network
+
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: iya_root_2024
+      MYSQL_DATABASE: iya_db
+      MYSQL_USER: iya_user
+      MYSQL_PASSWORD: iya_pass_2024
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - iya_network
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    ports:
+      - "8888:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: iya_user
+      PMA_PASSWORD: iya_pass_2024
+    depends_on:
+      - mysql
+    networks:
+      - iya_network
+
+volumes:
+  mysql_data:
+
+networks:
+  iya_network:
+    driver: bridge

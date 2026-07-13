@@ -1,0 +1,2 @@
+-- This is an empty schema file created to fix the Docker mount issue.
+-- You can put your actual database schema here.

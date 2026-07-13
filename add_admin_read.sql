@@ -1,0 +1,3 @@
+ALTER TABLE issues ADD COLUMN is_read_admin BOOLEAN DEFAULT FALSE;
+ALTER TABLE borrows ADD COLUMN is_read_admin BOOLEAN DEFAULT FALSE;
+ALTER TABLE password_reset_tickets ADD COLUMN is_read_admin BOOLEAN DEFAULT FALSE;

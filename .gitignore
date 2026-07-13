@@ -1,11 +1,39 @@
+# Frontend
+frontend/node_modules/
+frontend/.nuxt/
+frontend/.output/
+frontend/dist/
+frontend/.env
+frontend/.env.*
 node_modules/
 .nuxt/
 .output/
 dist/
+
+# Backend
+backend/vendor/
+backend/.env
+backend/.env.*
 vendor/
 .env
+
+# Database/Docker
+database/data/
+docker/mysql/data/
+
+# OS/Editor
 .DS_Store
-uploads/
 Thumbs.db
+.vscode/
+.idea/
+
+# App specifics
+uploads/
 *.sqlite
 *.log
+
+# Agent & Cache
+.agent/
+.codex/
+.npm-cache/
+frontend/.npm-cache-local/
